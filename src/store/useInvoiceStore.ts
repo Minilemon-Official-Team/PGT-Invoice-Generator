@@ -45,7 +45,7 @@ const createDefaultInvoice = (type: "INVOICE" | "RECEIPT"): InvoiceData => ({
         location: "",
         contact: "",
         logo: "",
-        color: "#008BFF",
+        color: "#A435F0",
     },
 
     client: {
