@@ -5,7 +5,8 @@ import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { useHydration } from "@/hooks/useHydration";
 import ItemListForm from "@/components/invoice-form/ItemListForm";
 import CalculationForm from "@/components/invoice-form/CalculationForm";
-import PreviewWrapper from "@/components/invoice-preview/PreviewWrapper";
+import HtmlPreview from "@/components/invoice-preview/HtmlPreview";
+import PdfPreview from "@/components/invoice-preview/PdfPreview";
 import DownloadButton from "@/components/invoice-preview/DownloadButton";
 import ResetButton from "@/components/invoice-form/ResetButton";
 
@@ -29,8 +30,13 @@ export default function InvoicePage() {
                 <ItemListForm />
                 <CalculationForm />
             </div>
-            <div className="mt-8">
-                <PreviewWrapper />
+            <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <HtmlPreview />
+                <PdfPreview />
+            </div>
+            <div className="flex gap-4 mt-6">
+                <DownloadButton />
+                <ResetButton />
             </div>
         </div>
     );

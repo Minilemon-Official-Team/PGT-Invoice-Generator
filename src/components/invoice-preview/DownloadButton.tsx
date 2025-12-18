@@ -10,26 +10,25 @@ export default function DownloadButton() {
     const { data } = useInvoiceStore();
 
     const handleDownload = async () => {
-        const document =
+        const doc =
             data.documentType === "INVOICE" ? (
                 <InvoiceTemplate data={data} />
             ) : (
                 <ReceiptTemplate data={data} />
             );
 
-        const blob = await pdf(document).toBlob();
+        const blob = await pdf(doc).toBlob();
 
-        const filename = `${data.documentType.toLowerCase()}-${
-            data.invoiceNumber
-        }.pdf`;
-
-        saveAs(blob, filename);
+        saveAs(
+            blob,
+            `${data.documentType.toLowerCase()}-${data.invoiceNumber}.pdf`
+        );
     };
 
     return (
         <button
             onClick={handleDownload}
-            className="bg-green-600 text-white px-4 py-2 rounded"
+            className="bg-green-600 text-white px-4 py-2"
         >
             Download PDF
         </button>
