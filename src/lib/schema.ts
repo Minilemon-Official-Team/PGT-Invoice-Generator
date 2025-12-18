@@ -57,6 +57,11 @@ export const InvoiceSchema = z.object({
     items: z.array(InvoiceItemSchema).min(1, "At least one item is required"),
 
     /**
+     * Template style (used for both Invoice and Receipt previews)
+     */
+    template: z.enum(["STYLE_A", "STYLE_B", "STYLE_C"]),
+
+    /**
      * Perhitungan
      */
     taxRate: z.number().min(0).max(100),

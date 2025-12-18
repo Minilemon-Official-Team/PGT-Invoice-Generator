@@ -11,6 +11,7 @@ export default function PdfPreview() {
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     useEffect(() => {
         let objectUrl: string | null = null;
@@ -19,7 +20,6 @@ export default function PdfPreview() {
             try {
                 setIsLoading(true);
                 setError(null);
-
                 const doc =
                     data.documentType === "INVOICE" ? (
                         <InvoiceTemplate data={data} />
@@ -30,9 +30,8 @@ export default function PdfPreview() {
                 const blob = await pdf(doc).toBlob();
                 objectUrl = URL.createObjectURL(blob);
 
-                if (iframeRef.current) {
-                    iframeRef.current.src = objectUrl;
-                }
+                // set preview URL in state; iframe will pick it up when mounted
+                setPreviewUrl(objectUrl);
             } catch (err) {
                 console.error("Error generating PDF preview:", err);
                 setError("Failed to generate PDF preview. Please try again.");
@@ -46,6 +45,10 @@ export default function PdfPreview() {
         return () => {
             if (objectUrl) {
                 URL.revokeObjectURL(objectUrl);
+                setPreviewUrl((cur) => {
+                    if (cur === objectUrl) return null;
+                    return cur;
+                });
             }
         };
     }, [data]);
@@ -60,14 +63,16 @@ export default function PdfPreview() {
 
             {error && <p className="text-red-500">{error}</p>}
 
-            {!isLoading && !error && (
-                <iframe
-                    ref={iframeRef}
-                    className="w-full border rounded"
-                    style={{ height: "600px" }}
-                    title="PDF Preview"
-                />
-            )}
+            <iframe
+                ref={iframeRef}
+                src={previewUrl ?? undefined}
+                className="w-full border rounded"
+                style={{
+                    height: "600px",
+                    display: isLoading ? "none" : "block",
+                }}
+                title="PDF Preview"
+            />
         </div>
     );
 }

@@ -8,8 +8,16 @@ import { InvoiceData, InvoiceItem } from "@/lib/types";
 interface InvoiceStore {
     data: InvoiceData;
 
+    // hydration flag — true after persist rehydrates
+    hasHydrated: boolean;
+    setHasHydrated: (v: boolean) => void;
+
     // actions
-    initialize: (type: "INVOICE" | "RECEIPT") => void;
+    initialize: (
+        type: "INVOICE" | "RECEIPT",
+        opts?: { reset?: boolean }
+    ) => void;
+    setDocumentType: (type: "INVOICE" | "RECEIPT") => void;
     updateField: <K extends keyof InvoiceData>(
         key: K,
         value: InvoiceData[K]
@@ -46,6 +54,9 @@ const createDefaultInvoice = (type: "INVOICE" | "RECEIPT"): InvoiceData => ({
 
     items: [],
 
+    // selected template style
+    template: "STYLE_A",
+
     taxRate: 0,
     discountType: "PERCENTAGE",
     discountValue: 0,
@@ -62,25 +73,31 @@ export const useInvoiceStore = create<InvoiceStore>()(
         (set) => ({
             data: createDefaultInvoice("INVOICE"),
 
-            initialize: (type) =>
-                set(() => ({
-                    data: createDefaultInvoice(type),
+            hasHydrated: false,
+            setHasHydrated: (v: boolean) => set({ hasHydrated: v }),
+
+            initialize: (type, opts = { reset: false }) => {
+                if (opts.reset) {
+                    set({ data: createDefaultInvoice(type) });
+                } else {
+                    // non-destructive: only set documentType
+                    set((state) => ({
+                        data: { ...state.data, documentType: type },
+                    }));
+                }
+            },
+
+            setDocumentType: (type) =>
+                set((state) => ({
+                    data: { ...state.data, documentType: type },
                 })),
 
             updateField: (key, value) =>
-                set((state) => ({
-                    data: {
-                        ...state.data,
-                        [key]: value,
-                    },
-                })),
+                set((state) => ({ data: { ...state.data, [key]: value } })),
 
             addItem: (item) =>
                 set((state) => ({
-                    data: {
-                        ...state.data,
-                        items: [...state.data.items, item],
-                    },
+                    data: { ...state.data, items: [...state.data.items, item] },
                 })),
 
             updateItem: (index, item) =>
@@ -103,13 +120,33 @@ export const useInvoiceStore = create<InvoiceStore>()(
                     },
                 })),
 
-            reset: () =>
-                set(() => ({
-                    data: createDefaultInvoice("INVOICE"),
-                })),
+            reset: () => set(() => ({ data: createDefaultInvoice("INVOICE") })),
         }),
         {
             name: "invoice-storage",
+            onRehydrateStorage: () => (persistedState) => {
+                try {
+                    // If there is persisted state, revive Date fields so components can use Date methods
+                    if (persistedState && (persistedState as any).data) {
+                        const d = (persistedState as any).data;
+                        if (d.issueDate) {
+                            d.issueDate = new Date(d.issueDate);
+                        }
+                        if (d.dueDate) {
+                            d.dueDate = new Date(d.dueDate);
+                        }
+                    }
+
+                    // mark hydrated after rehydrate completes
+                    Promise.resolve().then(() => {
+                        // @ts-ignore
+                        const s = useInvoiceStore.getState();
+                        s.setHasHydrated(true);
+                    });
+                } catch (e) {
+                    console.error("onRehydrateStorage error", e);
+                }
+            },
         }
     )
 );
