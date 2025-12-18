@@ -1,4 +1,11 @@
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import {
+    Document,
+    Page,
+    Text,
+    View,
+    StyleSheet,
+    Image,
+} from "@react-pdf/renderer";
 import { InvoiceData } from "@/lib/types";
 import { calculateInvoiceTotal } from "@/lib/calculation";
 import { formatCurrency } from "@/lib/utils";
@@ -12,6 +19,14 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginBottom: 20,
     },
+    header: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 12,
+    },
+    headerLeft: { flexDirection: "row", alignItems: "center" },
+    logo: { width: 48, height: 48, marginRight: 8 },
     row: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -26,6 +41,19 @@ export default function ReceiptTemplate({ data }: { data: InvoiceData }) {
     return (
         <Document>
             <Page size="A4" style={styles.page}>
+                <View style={styles.header}>
+                    <View style={styles.headerLeft}>
+                        {data.brand.logo && (
+                            <Image src={data.brand.logo} style={styles.logo} />
+                        )}
+                        <View>
+                            <Text style={styles.bold}>{data.brand.name}</Text>
+                            <Text>{data.brand.location}</Text>
+                        </View>
+                    </View>
+
+                    <Text style={styles.title}>RECEIPT</Text>
+                </View>
                 {data.template === "STYLE_B" ? (
                     <>
                         <Text style={styles.title}>RECEIPT</Text>
