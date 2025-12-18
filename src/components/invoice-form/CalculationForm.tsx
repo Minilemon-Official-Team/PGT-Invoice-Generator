@@ -3,6 +3,8 @@
 import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { calculateInvoiceTotal } from "@/lib/calculation";
 import { formatCurrency } from "@/lib/utils";
+import Card from "@/components/ui/Card";
+import Input from "@/components/ui/Input";
 
 export default function CalculationForm() {
     const { data, updateField } = useInvoiceStore();
@@ -10,18 +12,18 @@ export default function CalculationForm() {
     const result = calculateInvoiceTotal(data);
 
     return (
-        <div className="space-y-2">
-            <h3 className="font-bold">Calculation</h3>
+        <Card>
+            <h3 className="text-lg font-semibold">Perhitungan</h3>
 
-            <div className="flex gap-2">
-                <input
+            <div className="flex gap-2 items-center mt-2">
+                <Input
                     type="number"
-                    placeholder="Tax %"
+                    placeholder="Tarif Pajak (%)"
                     value={data.taxRate}
                     onChange={(e) =>
                         updateField("taxRate", Number(e.target.value))
                     }
-                    className="border p-2 w-24"
+                    className="w-28"
                 />
 
                 <select
@@ -32,31 +34,31 @@ export default function CalculationForm() {
                             e.target.value as "PERCENTAGE" | "NOMINAL"
                         )
                     }
-                    className="border p-2"
+                    className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2"
                 >
-                    <option value="PERCENTAGE">%</option>
-                    <option value="NOMINAL">Rp</option>
+                    <option value="PERCENTAGE">Persentase (%)</option>
+                    <option value="NOMINAL">Nominal (Rp)</option>
                 </select>
 
-                <input
+                <Input
                     type="number"
-                    placeholder="Discount"
+                    placeholder="Nilai Diskon"
                     value={data.discountValue}
                     onChange={(e) =>
                         updateField("discountValue", Number(e.target.value))
                     }
-                    className="border p-2 w-32"
+                    className="w-32"
                 />
             </div>
 
-            <div className="mt-4 space-y-1 text-sm">
+            <div className="mt-4 space-y-1 text-sm text-right">
                 <p>Subtotal: {formatCurrency(result.subtotal)}</p>
-                <p>Discount: -{formatCurrency(result.discountAmount)}</p>
-                <p>Tax: {formatCurrency(result.taxAmount)}</p>
-                <p className="font-bold">
+                <p>Diskon: -{formatCurrency(result.discountAmount)}</p>
+                <p>Pajak: {formatCurrency(result.taxAmount)}</p>
+                <p className="font-bold text-lg">
                     Total: {formatCurrency(result.total)}
                 </p>
             </div>
-        </div>
+        </Card>
     );
 }

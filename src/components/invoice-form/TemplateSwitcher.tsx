@@ -1,29 +1,29 @@
 "use client";
 
 import { useInvoiceStore } from "@/store/useInvoiceStore";
+import TemplateCard from "@/components/ui/TemplateCard";
 
-const templates = ["STYLE_A", "STYLE_B", "STYLE_C"] as const;
+const templates = [
+    { key: "STYLE_A", label: "Modern" },
+    { key: "STYLE_B", label: "Klasik" },
+    { key: "STYLE_C", label: "Minimal" },
+] as const;
 
 export default function TemplateSwitcher() {
     const { data, updateField } = useInvoiceStore();
 
     return (
-        <div className="space-y-2">
-            <h3 className="font-bold">Template Style</h3>
+        <div className="space-y-3">
+            <h3 className="text-lg font-semibold">Pilih Template</h3>
 
-            <div className="flex gap-2">
+            <div className="grid grid-cols-3 gap-3">
                 {templates.map((tpl) => (
-                    <button
-                        key={tpl}
-                        onClick={() => updateField("template", tpl)}
-                        className={`px-4 py-2 border rounded ${
-                            data.template === tpl
-                                ? "bg-blue-600 text-white"
-                                : "bg-white"
-                        }`}
-                    >
-                        {tpl.replace("STYLE_", "Style ")}
-                    </button>
+                    <TemplateCard
+                        key={tpl.key}
+                        title={tpl.label}
+                        active={data.template === tpl.key}
+                        onClick={() => updateField("template", tpl.key)}
+                    />
                 ))}
             </div>
         </div>
