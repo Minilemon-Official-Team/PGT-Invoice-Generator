@@ -1,9 +1,10 @@
 import { ReactNode } from "react";
+import "./globals.css";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
     return (
-        <html lang="en">
-            <body>{children}</body>
+        <html lang="id">
+            <body className="bg-page-bg font-sans">{children}</body>
         </html>
     );
 }
