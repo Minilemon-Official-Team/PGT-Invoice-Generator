@@ -41,7 +41,7 @@ export default function NumberInput({
         <button
           type="button"
           onClick={decrease}
-          className="h-4 w-5 flex items-center justify-center text-slate-400 hover:text-slate-700"
+          className="h-1 w-5 flex items-center justify-center text-slate-400 hover:text-slate-700"
         >
           <ChevronDown size={15} />
         </button>
