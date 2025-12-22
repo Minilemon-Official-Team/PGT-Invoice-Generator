@@ -13,8 +13,8 @@ export default function Logo({ variant = "default" }: LogoProps) {
             <Image
                 src="/images/Logo.png"
                 alt="Invoice Generator"
-                width={64}
-                height={64}
+                width={48}
+                height={48}
                 priority
             />
             <span
