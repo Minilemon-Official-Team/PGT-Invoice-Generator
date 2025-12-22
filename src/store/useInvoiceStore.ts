@@ -132,7 +132,10 @@ export const useInvoiceStore = create<InvoiceStore>()(
           },
         })),
 
-      reset: () => set(() => ({ data: createDefaultInvoice("INVOICE") })),
+      reset: () =>
+        set((state) => ({
+          data: createDefaultInvoice(state.data.documentType),
+        })),
     }),
     {
       name: "invoice-storage",
