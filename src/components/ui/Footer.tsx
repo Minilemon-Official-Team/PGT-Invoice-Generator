@@ -53,14 +53,14 @@ export default function Footer() {
           <h4 className="text-white font-semibold mb-4">Downloads</h4>
           <div className="space-y-3">
             <Image
-              src="/images/google-play.png"
+              src="/images/Google-Play.png"
               alt="Google Play"
               width={160}
               height={48}
               className="cursor-pointer hover:opacity-80"
             />
             <Image
-              src="/images/app-store.png"
+              src="/images/App-Store.png"
               alt="App Store"
               width={160}
               height={48}
