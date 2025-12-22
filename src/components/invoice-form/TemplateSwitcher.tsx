@@ -16,7 +16,7 @@ export default function TemplateSwitcher() {
     <div className="w-full rounded-3xl bg-white p-6 shadow-md space-y-6">
       <h3 className="text-2xl font-bold text-slate-800">Pilih Template</h3>
 
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
         {templates.map((tpl) => (
           <TemplateCard
             key={tpl.key}
